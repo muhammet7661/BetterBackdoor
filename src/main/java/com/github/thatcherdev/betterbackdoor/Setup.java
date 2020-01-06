@@ -63,13 +63,13 @@ public class Setup {
 	 * @throws FileNotFoundException
 	 */
 	private static void createBat(String filePath) throws FileNotFoundException {
-		PrintWriter out = new PrintWriter(new File(filePath));
+		try(PrintWriter out = new PrintWriter(new File(filePath))){
 		out.println(
 				"@echo off\n%~d0 & cd %~dp0\necho Set objShell = WScript.CreateObject(\"WScript.Shell\")>run.vbs\necho objShell.Run \"cmd /c "
 						+ "jre\\bin\\java -jar run.jar\", ^0, True>>run.vbs\nstart run.vbs\ncall:delvbs\n:delvbs\nif exist run.vbs (\n timeout 3 > nul\n del run.vbs\n @exit\n"
 						+ ") else (\ncall:delvbs\n)\ngoto:eof");
 		out.flush();
-		out.close();
+		}
 	}
 
 	/**
@@ -88,7 +88,6 @@ public class Setup {
 			try (Writer writer = Files.newBufferedWriter(fileSystem.getPath(filename), StandardCharsets.UTF_8,
 					StandardOpenOption.CREATE)) {
 				writer.write(fileContents);
-				writer.close();
 			}
 		}
 	}
